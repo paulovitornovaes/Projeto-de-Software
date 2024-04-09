@@ -20,13 +20,12 @@ namespace Iduff.Controllers
             _context = context;
         }
 
-        // GET: api/Usuario
+        /*
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Usuario>>> GetUsuarios()
         {
             return await _context.Usuarios.ToListAsync();
         }
-
         // GET: api/Usuario/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Usuario>> GetUsuario(long id)
@@ -101,5 +100,6 @@ namespace Iduff.Controllers
         {
             return _context.Usuarios.Any(e => e.Id == id);
         }
+*/
     }
 }

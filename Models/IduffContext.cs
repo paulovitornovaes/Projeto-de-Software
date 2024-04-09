@@ -1,16 +1,12 @@
-using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Iduff.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.General;
 
 namespace Iduff.Models;
 
-public class IduffContext : DbContext
+public class IduffContext(DbContextOptions options) : IdentityDbContext<Usuario>(options)
 {
-    public IduffContext(DbContextOptions<IduffContext> options)
-        : base(options)
-    {
-    }
-
-    public DbSet<Usuario> Usuarios { get; set; } = null!;
-
-public DbSet<Iduff.Models.Certificado> Certificado { get; set; } = default!;
+    
+    public DbSet<Iduff.Models.Certificado> Certificado { get; set; } = default!;
 }

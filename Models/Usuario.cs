@@ -1,6 +1,8 @@
-﻿namespace Iduff.Models;
+﻿using Microsoft.AspNetCore.Identity;
 
-public class Usuario
+namespace Iduff.Models;
+
+public class Usuario : IdentityUser
 {
     public long Id { get; set; }
     public string Name { get; set; }

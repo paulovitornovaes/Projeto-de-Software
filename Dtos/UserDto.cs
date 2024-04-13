@@ -2,9 +2,14 @@
 
 namespace Iduff.Dtos;
 
+public enum UserRole
+{
+    Admin = 0,
+    User = 1
+}
 public class UserDto
 {
-    public string? Id { get; set; } = string.Empty;
+    
     [Microsoft.Build.Framework.Required]
     public string Name { get; set; } = string.Empty;
 
@@ -21,4 +26,6 @@ public class UserDto
     [DataType(DataType.Password)]
     [Compare(nameof(Password))]
     public string ConfirmPassword { get; set; } = string.Empty;
+    
+    public UserRole Role { get; set; }
 }

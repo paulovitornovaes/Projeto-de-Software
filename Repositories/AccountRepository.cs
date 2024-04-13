@@ -1,15 +1,15 @@
-﻿using Microsoft.AspNetCore.Identity;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
+﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Iduff.Contracts;
 using Iduff.Dtos;
 using Iduff.Models;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 
-namespace IdentityManagerServerApi.Repositories
+namespace Iduff.Repositories
 {
-   public class AccountRepository(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IUserAccount
+   public class AccountRepository(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IAccountRepository
     {
     
         public async Task<ServiceResponses.GeneralResponse> CreateAccount(UserDto userDto)
@@ -26,25 +26,12 @@ namespace IdentityManagerServerApi.Repositories
             if (user is not null) return new ServiceResponses.GeneralResponse(false, "User registered already");
 
             var createUser = await userManager.CreateAsync(newUser!, userDto.Password);
-            if (!createUser.Succeeded) return new ServiceResponses.GeneralResponse(false, "Error occured.. please try again");
+            if (!createUser.Succeeded) return new ServiceResponses.GeneralResponse(false, createUser.Errors.FirstOrDefault()?.Description ?? "Um erro desconhecido aconteceu, contate o admin.");
 
-            //Assign Default Role : Admin to first registrar; rest is user
-            var checkAdmin = await roleManager.FindByNameAsync("Admin");
-            if (checkAdmin is null)
-            {
-                await roleManager.CreateAsync(new IdentityRole() { Name = "Admin" });
-                await userManager.AddToRoleAsync(newUser, "Admin");
-                return new ServiceResponses.GeneralResponse(true, "Account Created");
-            }
-            else
-            {
-                var checkUser = await roleManager.FindByNameAsync("User");
-                if (checkUser is null)
-                    await roleManager.CreateAsync(new IdentityRole() { Name = "User" });
+            string role = userDto.Role == UserRole.Admin ? "Admin" : "User";
 
-                await userManager.AddToRoleAsync(newUser, "User");
-                return new ServiceResponses.GeneralResponse(true, "Account Created");
-            }
+            await userManager.AddToRoleAsync(newUser, role);
+            return new ServiceResponses.GeneralResponse(true, "Account Created");
         }
 
         public async Task<ServiceResponses.LoginResponse> LoginAccount(LoginDto loginDTO)

@@ -23,13 +23,13 @@ namespace Iduff.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Certificado>>> GetCertificado()
         {
-            return await _context.Certificado.ToListAsync();
+            return await _context.Certificados.ToListAsync();
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Certificado>> GetCertificado(long id)
         {
-            var certificado = await _context.Certificado.FindAsync(id);
+            var certificado = await _context.Certificados.FindAsync(id);
 
             if (certificado == null)
             {
@@ -71,23 +71,32 @@ namespace Iduff.Controllers
         [HttpPost]
         public async Task<ActionResult<Certificado>> PostCertificado(Certificado certificado)
         {
-            _context.Certificado.Add(certificado);
+            _context.Certificados.Add(certificado);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetCertificado", new { id = certificado.Id }, certificado);
         }
 
+        [HttpPost]
+        public async Task<ActionResult<Certificado>> LoadCertificados(Certificado certificado)
+        {
+            _context.Certificados.Add(certificado);
+            await _context.SaveChangesAsync();
+
+            return CreatedAtAction("GetCertificado", new { id = certificado.Id }, certificado);
+        }
+        
         // DELETE: api/Certificado/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCertificado(long id)
         {
-            var certificado = await _context.Certificado.FindAsync(id);
+            var certificado = await _context.Certificados.FindAsync(id);
             if (certificado == null)
             {
                 return NotFound();
             }
 
-            _context.Certificado.Remove(certificado);
+            _context.Certificados.Remove(certificado);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -95,7 +104,7 @@ namespace Iduff.Controllers
 
         private bool CertificadoExists(long id)
         {
-            return _context.Certificado.Any(e => e.Id == id);
+            return _context.Certificados.Any(e => e.Id == id);
         }
     }
 }

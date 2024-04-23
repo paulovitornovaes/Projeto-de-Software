@@ -7,6 +7,6 @@ namespace Iduff.Models;
 
 public class IduffContext(DbContextOptions options) : IdentityDbContext<Usuario>(options)
 {
-    
-    public DbSet<Iduff.Models.Certificado> Certificado { get; set; } = default!;
+    public DbSet<Certificado> Certificados { get; set; } = default!;
+    public DbSet<Evento> Eventos { get; set; }
 }

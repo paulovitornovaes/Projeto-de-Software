@@ -1,9 +1,14 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Humanizer;
 using Iduff.Contracts;
 using Iduff.Dtos;
 using Iduff.Models;
+using JWT;
+using JWT.Algorithms;
+using JWT.Exceptions;
+using JWT.Serializers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
@@ -11,6 +16,10 @@ namespace Iduff.Repositories
 {
    public class AccountRepository(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IAccountRepository
     {
+        private IJsonSerializer _serializer = new JsonNetSerializer();
+        private IDateTimeProvider _provider = new UtcDateTimeProvider();
+        private IBase64UrlEncoder _urlEncoder = new JwtBase64UrlEncoder();
+        private IJwtAlgorithm _algorithm = new HMACSHA256Algorithm();
     
         public async Task<ServiceResponses.GeneralResponse> CreateAccount(UserDto userDto)
         {
@@ -49,11 +58,13 @@ namespace Iduff.Repositories
 
             var getUserRole = await userManager.GetRolesAsync(getUser);
             var userSession = new UserSession(getUser.Id, getUser.Name, getUser.Email, getUserRole.First());
-            string token = GenerateToken(userSession);
-            return new ServiceResponses.LoginResponse(true, token!, "Login completed");
+            var token = GenerateToken(userSession);
+            var tokenHandler = new JwtSecurityTokenHandler().WriteToken(token);
+            var teste = GetExpiryTimestamp(tokenHandler);
+            return new ServiceResponses.LoginResponse(true, tokenHandler, "Login completed");
         }
 
-        private string GenerateToken(UserSession user)
+        private JwtSecurityToken GenerateToken(UserSession user)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
@@ -68,10 +79,35 @@ namespace Iduff.Repositories
                 issuer: config["Jwt:Issuer"],
                 audience: config["Jwt:Audience"],
                 claims: userClaims,
-                expires: DateTime.Now.AddDays(1),
+                expires: DateTime.Now.AddHours(1),
                 signingCredentials: credentials
                 );
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return token;
+        }
+        
+        public DateTime GetExpiryTimestamp(string accessToken)
+        {
+            try
+            {
+                IJwtValidator _validator = new JwtValidator(_serializer, _provider);
+                IJwtDecoder decoder = new JwtDecoder(_serializer, _validator, _urlEncoder, _algorithm);
+                var token = decoder.DecodeToObject<JwtToken>(accessToken);
+                DateTimeOffset dateTimeOffset = DateTimeOffset.FromUnixTimeSeconds(token.exp);
+                return dateTimeOffset.LocalDateTime;
+            }
+            catch (TokenExpiredException)
+            {
+                return DateTime.MinValue;
+            }
+            catch (SignatureVerificationException)
+            {
+                return DateTime.MinValue;
+            }
+            catch (Exception ex)
+            {
+                // ... remember to handle the generic exception ...
+                return DateTime.MinValue;
+            }
         }
     }
 }

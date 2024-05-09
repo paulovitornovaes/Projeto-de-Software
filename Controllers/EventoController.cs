@@ -3,24 +3,38 @@ using Iduff.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
-namespace Iduff.Controllers;
-
-[Microsoft.AspNetCore.Components.Route("api/[controller]")]
-[ApiController]
-
-public class EventoController : ControllerBase
+namespace Iduff.Controllers
 {
-    
-    private readonly IduffContext _context;
+    [Route("api/[controller]")]
+    [ApiController]
 
-    public EventoController(IduffContext context)
+    public class EventoController : ControllerBase
     {
-        _context = context;
-    }
-    
-    [HttpPost]
-    public async Task<EntityEntry<Evento>> CarregarEvento(Evento evento)
-    {
-        return await _context.Eventos.AddAsync(evento);
+        
+        private readonly IduffContext _context;
+
+        public EventoController(IduffContext context)
+        {
+            _context = context;
+        }
+        
+        [HttpPost("LoadFromCsv")]
+        private async Task<OkObjectResult> LoadFromCsv(IFormFile file)
+        {
+            List<string[]> data = new List<string[]>();
+
+            
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    var values = line.Split(',');
+                    data.Add(values);
+                }
+            }
+
+            return Ok("O arquivo CSV está no formato correto.");
+        }
     }
 }

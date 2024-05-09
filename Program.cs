@@ -2,6 +2,8 @@ using System.Text;
 using Iduff.Contracts;
 using Iduff.Models;
 using Iduff.Repositories;
+using Iduff.Services;
+using Iduff.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -58,6 +60,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddScoped<IAccountRepository, AccountRepository>();
+builder.Services.AddScoped<ICertificadoService, CertificadoService>();
 
 var app = builder.Build();
 

@@ -14,4 +14,5 @@ public class Evento
     public String Local { get; set; }
     public long HorasComplementares { get; set; }
     public Usuario Organizador { get; set; }
+    public string Titulo { get; set; }
 }

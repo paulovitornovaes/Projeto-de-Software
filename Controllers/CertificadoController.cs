@@ -2,10 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Iduff.Dtos;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Iduff.Models;
+using Iduff.Services.Interfaces;
 
 namespace Iduff.Controllers
 {
@@ -14,14 +16,16 @@ namespace Iduff.Controllers
     public class CertificadoController : ControllerBase
     {
         private readonly IduffContext _context;
+        private readonly ICertificadoService _certificadoService;
 
-        public CertificadoController(IduffContext context)
+        public CertificadoController(IduffContext context, ICertificadoService certificadoService)
         {
             _context = context;
+            _certificadoService = certificadoService;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Certificado>>> GetCertificado()
+        [HttpGet("List")]
+        public async Task<ActionResult<IEnumerable<Certificado>>> GetCertificados()
         {
             return await _context.Certificados.ToListAsync();
         }
@@ -77,7 +81,7 @@ namespace Iduff.Controllers
             return CreatedAtAction("GetCertificado", new { id = certificado.Id }, certificado);
         }
 
-        [HttpPost]
+        [HttpPost("Load")]
         public async Task<ActionResult<Certificado>> LoadCertificados(Certificado certificado)
         {
             _context.Certificados.Add(certificado);
@@ -100,6 +104,29 @@ namespace Iduff.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+        
+        [HttpPost("LoadFromCsv")]
+        [Consumes("multipart/form-data")] // Adicionando o atributo Consumes para permitir upload de arquivo
+        public async Task<OkObjectResult> LoadFromCsv(IFormFile file, [FromForm] EventoDto eventoDto)
+        {
+            
+            
+            List<string[]> data = new List<string[]>();
+            var evento = await _certificadoService.MapearEvento(eventoDto);
+            await _certificadoService.MapearFormulario(file);
+            
+            using (var reader = new StreamReader(file.OpenReadStream()))
+            {
+                while (!reader.EndOfStream)
+                {
+                    var line = await reader.ReadLineAsync();
+                    var values = line.Split(',');
+                    data.Add(values);
+                }
+            }
+
+            return Ok("O arquivo CSV está no formato correto.");
         }
 
         private bool CertificadoExists(long id)

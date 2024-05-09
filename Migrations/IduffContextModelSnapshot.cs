@@ -36,7 +36,43 @@ namespace Iduff.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Certificado");
+                    b.ToTable("Certificados");
+                });
+
+            modelBuilder.Entity("Iduff.Models.Evento", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ID");
+
+                    b.Property<DateTime>("Data")
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("HorasComplementares")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Local")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("OrganizadorId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("PalestranteId")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Titulo")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OrganizadorId");
+
+                    b.HasIndex("PalestranteId");
+
+                    b.ToTable("EVENTO");
                 });
 
             modelBuilder.Entity("Iduff.Models.Usuario", b =>
@@ -63,6 +99,9 @@ namespace Iduff.Migrations
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
                         .HasColumnType("TEXT");
+
+                    b.Property<long?>("Matricula")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -233,6 +272,21 @@ namespace Iduff.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens", (string)null);
+                });
+
+            modelBuilder.Entity("Iduff.Models.Evento", b =>
+                {
+                    b.HasOne("Iduff.Models.Usuario", "Organizador")
+                        .WithMany()
+                        .HasForeignKey("OrganizadorId");
+
+                    b.HasOne("Iduff.Models.Usuario", "Palestrante")
+                        .WithMany()
+                        .HasForeignKey("PalestranteId");
+
+                    b.Navigation("Organizador");
+
+                    b.Navigation("Palestrante");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

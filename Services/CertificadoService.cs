@@ -59,7 +59,6 @@ public class CertificadoService : ICertificadoService
     
         if (!string.IsNullOrEmpty(eventoDto.MatriculaPalestrante))
         {
-            var palestrantes = _context.Users.ToList();
             var palestrante =
                 await _context.Users.FirstOrDefaultAsync(c =>
                     c.Matricula == long.Parse(eventoDto.MatriculaPalestrante));
@@ -67,17 +66,15 @@ public class CertificadoService : ICertificadoService
             {
                 evento.Palestrante = palestrante;
             }
-            // Se não encontrar um palestrante válido, você pode lidar com isso de acordo com sua lógica, como lançar uma exceção ou definir como null.
         }
 
         if (!string.IsNullOrEmpty(eventoDto.MatriculaOrganizador))
         {
-            var organizador = await _context.Users.FindAsync(eventoDto.MatriculaOrganizador);
+            var organizador = await _context.Users.FirstOrDefaultAsync(c => c.Matricula == long.Parse(eventoDto.MatriculaOrganizador));
             if (organizador != null)
             {
                 evento.Organizador = organizador;
             }
-            // Se não encontrar um organizador válido, você pode lidar com isso de acordo com sua lógica, como lançar uma exceção ou definir como null.
         }
     
         evento.Data = eventoDto.Data;

@@ -59,7 +59,10 @@ public class CertificadoService : ICertificadoService
     
         if (!string.IsNullOrEmpty(eventoDto.MatriculaPalestrante))
         {
-            var palestrante = await _context.Users.FindAsync(eventoDto.MatriculaPalestrante);
+            var palestrantes = _context.Users.ToList();
+            var palestrante =
+                await _context.Users.FirstOrDefaultAsync(c =>
+                    c.Matricula == long.Parse(eventoDto.MatriculaPalestrante));
             if (palestrante != null)
             {
                 evento.Palestrante = palestrante;

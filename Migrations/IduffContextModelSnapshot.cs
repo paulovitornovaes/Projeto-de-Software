@@ -35,7 +35,6 @@ namespace Iduff.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("NomePalestrante")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<long>("QuantidadeHoras")
@@ -68,11 +67,9 @@ namespace Iduff.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("OrganizadorId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PalestranteId")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Titulo")
@@ -327,15 +324,11 @@ namespace Iduff.Migrations
                 {
                     b.HasOne("Iduff.Models.Usuario", "Organizador")
                         .WithMany()
-                        .HasForeignKey("OrganizadorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("OrganizadorId");
 
                     b.HasOne("Iduff.Models.Usuario", "Palestrante")
                         .WithMany()
-                        .HasForeignKey("PalestranteId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("PalestranteId");
 
                     b.Navigation("Organizador");
 

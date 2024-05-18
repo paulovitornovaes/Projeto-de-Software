@@ -11,15 +11,15 @@ namespace Iduff.Models
         [Key]
         [Column("ID")]
         public long Id { get; set; }
-        public string PalestranteId { get; set; }
+        public string? PalestranteId { get; set; }
         [ForeignKey("PalestranteId")]
-        public Usuario Palestrante { get; set; }
+        public Usuario? Palestrante { get; set; }
         public DateTime Data { get; set; }
         public string Local { get; set; }
         public long HorasComplementares { get; set; }
-        public string OrganizadorId { get; set; }
+        public string? OrganizadorId { get; set; }
         [ForeignKey("OrganizadorId")]
-        public Usuario Organizador { get; set; }
+        public Usuario? Organizador { get; set; }
         public string Titulo { get; set; }
 
         public ICollection<Certificado> Certificados { get; set; } = new List<Certificado>();

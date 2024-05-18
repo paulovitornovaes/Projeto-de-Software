@@ -4,7 +4,7 @@
     {
         public long Id { get; set; }
         public string NomeEvento { get; set; }
-        public string NomePalestrante { get; set; }
+        public string? NomePalestrante { get; set; }
         public long QuantidadeHoras { get; set; }
 
         public string AlunoId { get; set; }

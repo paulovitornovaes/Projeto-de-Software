@@ -24,10 +24,11 @@ namespace Iduff.Controllers
         
         [HttpPost("SalvaPresencaEvento")]
         [Consumes("multipart/form-data")]
-        public async Task<OkObjectResult> SalvaPresencaEvento(IFormFile file)
+        public async Task<OkObjectResult> SalvaPresencaEvento(IFormFile file, [FromForm] EventoDto eventoDto)
         {
+            var evento = await _eventoService.SalvaEvento(eventoDto);
 
-            await _eventoService.SalvaPresencaEvento(file);
+            await _eventoService.SalvaPresencaEvento(file, evento);
             
             return Ok("O arquivo CSV está no formato correto.");
         }

@@ -3,6 +3,7 @@ using System;
 using Iduff.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Iduff.Migrations
 {
     [DbContext(typeof(IduffContext))]
-    partial class IduffContextModelSnapshot : ModelSnapshot
+    [Migration("20240518164002_evento-user")]
+    partial class eventouser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
@@ -36,7 +39,7 @@ namespace Iduff.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Certificados", (string)null);
+                    b.ToTable("Certificados");
                 });
 
             modelBuilder.Entity("Iduff.Models.Evento", b =>
@@ -72,7 +75,7 @@ namespace Iduff.Migrations
 
                     b.HasIndex("PalestranteId");
 
-                    b.ToTable("EVENTO", (string)null);
+                    b.ToTable("EVENTO");
                 });
 
             modelBuilder.Entity("Iduff.Models.Usuario", b =>

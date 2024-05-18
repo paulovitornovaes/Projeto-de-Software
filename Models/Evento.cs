@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Iduff.Models;
 
-[Table("EVENTO")]
+[Table("Evento")]
 public class Evento
 {
     [Key]

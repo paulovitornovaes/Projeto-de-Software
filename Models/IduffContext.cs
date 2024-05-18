@@ -23,6 +23,16 @@ public class IduffContext(DbContextOptions options) : IdentityDbContext<Usuario>
         modelBuilder.Entity<Aluno>()
             .Property(u => u.matricula)
             .HasMaxLength(50);
+        
+        modelBuilder.Entity<Certificado>()
+            .HasOne(c => c.Aluno)
+            .WithMany(a => a.Certificados)
+            .HasForeignKey(c => c.AlunoId);
+
+        modelBuilder.Entity<Certificado>()
+            .HasOne(c => c.Evento)
+            .WithMany(e => e.Certificados)
+            .HasForeignKey(c => c.EventoId);
 
     }
 

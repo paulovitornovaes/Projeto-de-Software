@@ -23,6 +23,13 @@ namespace Iduff.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("AlunoId")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("EventoId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("NomeEvento")
                         .IsRequired()
                         .HasColumnType("TEXT");
@@ -36,7 +43,11 @@ namespace Iduff.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Certificados", (string)null);
+                    b.HasIndex("AlunoId");
+
+                    b.HasIndex("EventoId");
+
+                    b.ToTable("Certificados");
                 });
 
             modelBuilder.Entity("Iduff.Models.Evento", b =>
@@ -57,9 +68,11 @@ namespace Iduff.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<string>("OrganizadorId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("PalestranteId")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Titulo")
@@ -72,7 +85,7 @@ namespace Iduff.Migrations
 
                     b.HasIndex("PalestranteId");
 
-                    b.ToTable("EVENTO", (string)null);
+                    b.ToTable("Evento");
                 });
 
             modelBuilder.Entity("Iduff.Models.Usuario", b =>
@@ -291,15 +304,38 @@ namespace Iduff.Migrations
                     b.HasDiscriminator().HasValue("Aluno");
                 });
 
+            modelBuilder.Entity("Iduff.Models.Certificado", b =>
+                {
+                    b.HasOne("Iduff.Models.Aluno", "Aluno")
+                        .WithMany("Certificados")
+                        .HasForeignKey("AlunoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Iduff.Models.Evento", "Evento")
+                        .WithMany("Certificados")
+                        .HasForeignKey("EventoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Aluno");
+
+                    b.Navigation("Evento");
+                });
+
             modelBuilder.Entity("Iduff.Models.Evento", b =>
                 {
                     b.HasOne("Iduff.Models.Usuario", "Organizador")
                         .WithMany()
-                        .HasForeignKey("OrganizadorId");
+                        .HasForeignKey("OrganizadorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Iduff.Models.Usuario", "Palestrante")
                         .WithMany()
-                        .HasForeignKey("PalestranteId");
+                        .HasForeignKey("PalestranteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Organizador");
 
@@ -355,6 +391,16 @@ namespace Iduff.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Iduff.Models.Evento", b =>
+                {
+                    b.Navigation("Certificados");
+                });
+
+            modelBuilder.Entity("Iduff.Models.Aluno", b =>
+                {
+                    b.Navigation("Certificados");
                 });
 #pragma warning restore 612, 618
         }

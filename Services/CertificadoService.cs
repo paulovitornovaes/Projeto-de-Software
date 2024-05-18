@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
-using CsvHelper.Configuration;
+using CsvHelper;
 using Iduff.Dtos;
 using Iduff.Models;
 using Iduff.Services.Interfaces;
-using Microsoft.CodeAnalysis.Elfie.Serialization;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 
 namespace Iduff.Services;
 
@@ -19,40 +19,27 @@ public class CertificadoService : ICertificadoService
     {
         return 0;
     }
-
+    /*
     public async Task MapearFormulario(IFormFile arquivo)
     {
-        using (var stream = arquivo.OpenReadStream())
-        using (var reader = new StreamReader(stream))
+        using (var reader = new StreamReader("path\\to\\file.csv"))
+        using (var csv = new CsvReader(reader))
         {
-            using (var csv = new CsvReader(stream, false))
-            {
-                var registros = csv.Columns;
-                
-                //var registros = csv.GetRecords<RegistroCSV>();
-
-                // Lista para armazenar os usuários encontrados
-                //var usuariosEncontrados = new List<User>();
-
-                // Itera sobre cada registro do CSV
-                foreach (var registro in registros)
-                {
-                    // Busca o usuário pelo número de matrícula no banco de dados
-                    //var usuario = await _context.Users.FirstOrDefaultAsync(u => u.Matricula == registro.Matricula);
-
-                    // Se o usuário for encontrado, adiciona à lista de usuários encontrados
-                    /*
-                    if (usuario != null)
-                    {
-                        //usuariosEncontrados.Add(usuario);
-                    }
-                    */
-                    
-                }
-            }
+            var records = csv.GetRecords<Foo>();
         }
+        
+        var stream = arquivo.OpenReadStream();
+        
+        using (var csvReader = new CsvReader(arquivo.OpenReadStream(), CultureInfo.InvariantCulture))
+        {
+            csvReader.NextRow();
+            var tesste = csvReader.ToJson();
+            var teste = csvReader.Columns;
+        }
+        
     }
-
+*/
+    /*
     public async Task<Evento> MapearEvento(EventoDto eventoDto)
     {
         Evento evento = new Evento();
@@ -61,7 +48,7 @@ public class CertificadoService : ICertificadoService
         {
             var palestrante =
                 await _context.Users.FirstOrDefaultAsync(c =>
-                    c.Matricula == long.Parse(eventoDto.MatriculaPalestrante));
+                    c.matricula == long.Parse(eventoDto.MatriculaPalestrante));
             if (palestrante != null)
             {
                 evento.Palestrante = palestrante;
@@ -84,6 +71,6 @@ public class CertificadoService : ICertificadoService
 
         return evento;
     }
-
+*/
     
 }

@@ -5,5 +5,4 @@ namespace Iduff.Models;
 public class Usuario : IdentityUser
 {
     public string Name { get; set; }
-    public long? Matricula { get; set; }
 }

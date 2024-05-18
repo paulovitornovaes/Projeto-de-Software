@@ -5,6 +5,6 @@ namespace Iduff.Services.Interfaces;
 
 public interface ICertificadoService
 {
-    Task<Evento> MapearEvento(EventoDto eventoDto);
-    Task MapearFormulario(IFormFile arquivo);
+    //Task<Evento> MapearEvento(EventoDto eventoDto);
+    //Task MapearFormulario(IFormFile arquivo);
 }

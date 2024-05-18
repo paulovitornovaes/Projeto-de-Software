@@ -2,5 +2,6 @@
 
 public class Aluno : Usuario
 {
-    public List<Certificado> Certificados { get; set; }
+    public long matricula { get; set; }
+    //public List<Certificado> Certificados { get; set; }
 }

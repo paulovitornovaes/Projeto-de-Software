@@ -105,7 +105,7 @@ namespace Iduff.Controllers
 
             return NoContent();
         }
-        
+        /*
         [HttpPost("LoadFromCsv")]
         [Consumes("multipart/form-data")] // Adicionando o atributo Consumes para permitir upload de arquivo
         public async Task<OkObjectResult> LoadFromCsv(IFormFile file, [FromForm] EventoDto eventoDto)
@@ -114,7 +114,7 @@ namespace Iduff.Controllers
             
             List<string[]> data = new List<string[]>();
             var evento = await _certificadoService.MapearEvento(eventoDto);
-            await _certificadoService.MapearFormulario(file);
+            //await _certificadoService.MapearFormulario(file);
             
             using (var reader = new StreamReader(file.OpenReadStream()))
             {
@@ -128,7 +128,7 @@ namespace Iduff.Controllers
 
             return Ok("O arquivo CSV está no formato correto.");
         }
-
+*/
         private bool CertificadoExists(long id)
         {
             return _context.Certificados.Any(e => e.Id == id);

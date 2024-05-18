@@ -1,5 +1,7 @@
 ﻿using Iduff.Contracts;
+using Iduff.Dtos;
 using Iduff.Models;
+using Iduff.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
@@ -12,28 +14,21 @@ namespace Iduff.Controllers
     {
         
         private readonly IduffContext _context;
+        private readonly IEventoService _eventoService;
 
-        public EventoController(IduffContext context)
+        public EventoController(IduffContext context, IEventoService eventoService)
         {
             _context = context;
+            _eventoService = eventoService;
         }
         
-        [HttpPost("LoadFromCsv")]
-        private async Task<OkObjectResult> LoadFromCsv(IFormFile file)
+        [HttpPost("SalvaPresencaEvento")]
+        [Consumes("multipart/form-data")]
+        public async Task<OkObjectResult> SalvaPresencaEvento(IFormFile file)
         {
-            List<string[]> data = new List<string[]>();
 
+            await _eventoService.SalvaPresencaEvento(file);
             
-            using (var reader = new StreamReader(file.OpenReadStream()))
-            {
-                while (!reader.EndOfStream)
-                {
-                    var line = await reader.ReadLineAsync();
-                    var values = line.Split(',');
-                    data.Add(values);
-                }
-            }
-
             return Ok("O arquivo CSV está no formato correto.");
         }
     }

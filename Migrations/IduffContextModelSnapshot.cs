@@ -17,6 +17,33 @@ namespace Iduff.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.3");
 
+            modelBuilder.Entity("Iduff.Models.CargaHoraria", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER")
+                        .HasColumnName("ID");
+
+                    b.Property<int>("estagio")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ministrarPalestras")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("organizacoes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("presencaPalestras")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("total")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CargaHoraria");
+                });
+
             modelBuilder.Entity("Iduff.Models.Certificado", b =>
                 {
                     b.Property<long>("Id")
@@ -294,9 +321,14 @@ namespace Iduff.Migrations
                 {
                     b.HasBaseType("Iduff.Models.Usuario");
 
+                    b.Property<long>("CargaHorariaId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<long>("matricula")
                         .HasMaxLength(50)
                         .HasColumnType("INTEGER");
+
+                    b.HasIndex("CargaHorariaId");
 
                     b.HasDiscriminator().HasValue("Aluno");
                 });
@@ -384,6 +416,17 @@ namespace Iduff.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Iduff.Models.Aluno", b =>
+                {
+                    b.HasOne("Iduff.Models.CargaHoraria", "CargaHoraria")
+                        .WithMany()
+                        .HasForeignKey("CargaHorariaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CargaHoraria");
                 });
 
             modelBuilder.Entity("Iduff.Models.Evento", b =>

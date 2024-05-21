@@ -84,9 +84,27 @@ public class EventoService : IEventoService
         await _context.SaveChangesAsync();
         return evento;
     }
+
+    public void ContabilizaHorasPalestranteOrganizador(Evento evento)
+    {
+        if (evento.Palestrante != null)
+        {
+            var valor = evento.Palestrante.CargaHoraria.ministrarPalestras += (int)CargaHorariaEnum.MinistrarPalestras;
+            evento.Palestrante.CargaHoraria.total += valor;
+        }
+
+        if (evento.Organizador != null)
+        {
+            var valor = evento.Organizador.CargaHoraria.organizarPalestras += (int)CargaHorariaEnum.OrganizarPalestras;
+            evento.Organizador.CargaHoraria.total += valor;
+        }
+    }
     public async Task SalvaPresencaEvento(IFormFile arquivo, Evento evento)
     {
+        ContabilizaHorasPalestranteOrganizador(evento);
+        
         var alunos = await ListarAlunos(arquivo);
+        
         foreach (var aluno in alunos)
         {
             var certificado = new Certificado
@@ -99,10 +117,14 @@ public class EventoService : IEventoService
                 AlunoId = aluno.Id,
                 EventoId = evento.Id
             };
-
+            
+            aluno.CargaHoraria.presencaPalestras += evento.HorasComplementares;
+            
             _context.Certificados.Add(certificado);
+            
             await _context.SaveChangesAsync();
         }
+        
     }
     
 }

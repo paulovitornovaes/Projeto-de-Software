@@ -42,7 +42,8 @@ namespace Iduff.Controllers
 
             return certificado;
         }
-
+        
+        /*
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCertificado(long id, Certificado certificado)
         {
@@ -71,7 +72,9 @@ namespace Iduff.Controllers
 
             return NoContent();
         }
-
+        */
+        
+        /*
         [HttpPost]
         public async Task<ActionResult<Certificado>> PostCertificado(Certificado certificado)
         {
@@ -80,7 +83,8 @@ namespace Iduff.Controllers
 
             return CreatedAtAction("GetCertificado", new { id = certificado.Id }, certificado);
         }
-
+        */
+        /*
         [HttpPost("Load")]
         public async Task<ActionResult<Certificado>> LoadCertificados(Certificado certificado)
         {
@@ -89,8 +93,9 @@ namespace Iduff.Controllers
 
             return CreatedAtAction("GetCertificado", new { id = certificado.Id }, certificado);
         }
+        */
         
-        // DELETE: api/Certificado/5
+        /*
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCertificado(long id)
         {
@@ -105,6 +110,9 @@ namespace Iduff.Controllers
 
             return NoContent();
         }
+        */
+        
+        
         /*
         [HttpPost("LoadFromCsv")]
         [Consumes("multipart/form-data")] // Adicionando o atributo Consumes para permitir upload de arquivo

@@ -93,7 +93,6 @@ public class EventoService : IEventoService
         await _context.SaveChangesAsync();
         return evento;
     }
-
     
     public async Task SalvaPresencaEvento(IFormFile arquivo, Evento evento)
     {

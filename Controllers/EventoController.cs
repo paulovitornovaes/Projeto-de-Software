@@ -30,7 +30,7 @@ namespace Iduff.Controllers
 
             await _eventoService.SalvaPresencaEvento(file, evento);
             
-            return Ok("O arquivo CSV está no formato correto.");
+            return Ok("Presencas contabilizadas.");
         }
     }
 }

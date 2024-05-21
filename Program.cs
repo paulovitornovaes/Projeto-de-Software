@@ -63,6 +63,7 @@ builder.Services.AddScoped<IAccountRepository, AccountRepository>();
 builder.Services.AddScoped<IAlunoRepository, AlunoRepository>();
 builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 builder.Services.AddScoped<ICertificadoService, CertificadoService>();
+builder.Services.AddScoped<ICargaHorariaService, CargaHorariaService>();
 builder.Services.AddScoped<IEventoService, EventoService>();
 builder.Services.AddScoped<IAlunoService, AlunoService>();
 

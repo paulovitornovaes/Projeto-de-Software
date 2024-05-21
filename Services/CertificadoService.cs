@@ -19,6 +19,12 @@ public class CertificadoService : ICertificadoService
     {
         return 0;
     }
+
+    public Task CriarCertificado(Certificado certificado)
+    {
+        _context.Certificados.Add(certificado);
+        return Task.CompletedTask;
+    }
     /*
     public async Task MapearFormulario(IFormFile arquivo)
     {

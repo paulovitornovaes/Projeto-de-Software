@@ -15,13 +15,16 @@ public class EventoService : IEventoService
     private readonly IAlunoRepository _alunoRepository;
     private readonly IEventoRepository _eventoRepository;
     private readonly IduffContext _context;
+    private readonly ICargaHorariaService _cargaHorariaService;
+    private readonly ICertificadoService _certificadoService;
 
-
-    public EventoService(IAlunoRepository alunoRepository, IEventoRepository eventoRepository, IduffContext context)
+    public EventoService(IAlunoRepository alunoRepository, IEventoRepository eventoRepository, IduffContext context, ICargaHorariaService cargaHorariaService, ICertificadoService certificadoService)
     {
         _alunoRepository = alunoRepository;
         _eventoRepository = eventoRepository;
         _context = context;
+        _cargaHorariaService = cargaHorariaService;
+        _certificadoService = certificadoService;
     }
 
     private async Task<List<long>> ListarMatriculasPresentes(IFormFile arquivo)
@@ -91,27 +94,10 @@ public class EventoService : IEventoService
         return evento;
     }
 
-    public void ContabilizaHorasPalestranteOrganizador(Evento evento)
-    {
-        if (evento.Palestrante != null)
-        {
-            var valor = evento.Palestrante.CargaHoraria.ministrarPalestras += (int)CargaHorariaEnum.MinistrarPalestras;
-            evento.Palestrante.CargaHoraria.total += valor;
-            
-            _context.CargaHoraria.Update(evento.Palestrante.CargaHoraria);
-        }
-
-        if (evento.Organizador != null)
-        {
-            var valor = evento.Organizador.CargaHoraria.organizarPalestras += (int)CargaHorariaEnum.OrganizarPalestras;
-            evento.Organizador.CargaHoraria.total += valor;
-            
-            _context.CargaHoraria.Update(evento.Organizador.CargaHoraria);
-        }
-    }
+    
     public async Task SalvaPresencaEvento(IFormFile arquivo, Evento evento)
     {
-        ContabilizaHorasPalestranteOrganizador(evento);
+        await _cargaHorariaService.ContabilizaHorasPalestranteOrganizador(evento);
         
         var alunos = await ListarAlunos(arquivo);
         
@@ -127,16 +113,12 @@ public class EventoService : IEventoService
                 AlunoId = aluno.Id,
                 EventoId = evento.Id
             };
+
+            await _cargaHorariaService.ContabilizaPresencaEvento(aluno.CargaHoraria, evento.HorasComplementares);
+            await _certificadoService.CriarCertificado(certificado);
             
-            var valor = aluno.CargaHoraria.presencaPalestras += evento.HorasComplementares;
-            aluno.CargaHoraria.total += valor;
-            
-            _context.CargaHoraria.Update(aluno.CargaHoraria);
-            
-            _context.Certificados.Add(certificado);
-            
-            await _context.SaveChangesAsync();
         }
+        await _context.SaveChangesAsync();
         
     }
     

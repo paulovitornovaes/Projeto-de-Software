@@ -14,4 +14,6 @@ public class CargaHoraria
     public int estagio { get; set; }
     public int total { get; set; }
     
+    public Aluno Aluno { get; set; }
+    
 }

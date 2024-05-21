@@ -6,6 +6,7 @@ using Iduff.Contracts;
 using Iduff.Dtos;
 using Iduff.Models;
 using Iduff.Services.Interfaces;
+using Microsoft.EntityFrameworkCore;
 
 namespace Iduff.Services;
 
@@ -46,7 +47,9 @@ public class EventoService : IEventoService
         foreach (var matricula in matriculas)
         {
 
-            var aluno = _context.Alunos.FirstOrDefault(c => c.matricula == matricula);
+            var aluno = 
+            EntityFrameworkQueryableExtensions.Include(_context.Alunos, u => u.CargaHoraria)
+                .FirstOrDefault(c => c.matricula == matricula);
             if (aluno != null)
             {
                 alunos.Add(aluno);
@@ -58,8 +61,11 @@ public class EventoService : IEventoService
 
     private async Task<Evento> MapearEvento(EventoDto eventoDto)
     {
-        var palestrante =  _context.Alunos.FirstOrDefault(a => a.matricula == long.Parse(eventoDto.MatriculaPalestrante));
-        var organizador =  _context.Alunos.FirstOrDefault(a => a.matricula == long.Parse(eventoDto.MatriculaOrganizador));
+        var palestrante =  EntityFrameworkQueryableExtensions.Include(_context.Alunos, u => u.CargaHoraria)
+            .FirstOrDefault(a => a.matricula == long.Parse(eventoDto.MatriculaPalestrante));
+        
+        var organizador =  EntityFrameworkQueryableExtensions.Include(_context.Alunos, u => u.CargaHoraria)
+            .FirstOrDefault(a => a.matricula == long.Parse(eventoDto.MatriculaOrganizador));
         
         var evento = new Evento
         {
@@ -91,12 +97,16 @@ public class EventoService : IEventoService
         {
             var valor = evento.Palestrante.CargaHoraria.ministrarPalestras += (int)CargaHorariaEnum.MinistrarPalestras;
             evento.Palestrante.CargaHoraria.total += valor;
+            
+            _context.CargaHoraria.Update(evento.Palestrante.CargaHoraria);
         }
 
         if (evento.Organizador != null)
         {
             var valor = evento.Organizador.CargaHoraria.organizarPalestras += (int)CargaHorariaEnum.OrganizarPalestras;
             evento.Organizador.CargaHoraria.total += valor;
+            
+            _context.CargaHoraria.Update(evento.Organizador.CargaHoraria);
         }
     }
     public async Task SalvaPresencaEvento(IFormFile arquivo, Evento evento)
@@ -118,7 +128,10 @@ public class EventoService : IEventoService
                 EventoId = evento.Id
             };
             
-            aluno.CargaHoraria.presencaPalestras += evento.HorasComplementares;
+            var valor = aluno.CargaHoraria.presencaPalestras += evento.HorasComplementares;
+            aluno.CargaHoraria.total += valor;
+            
+            _context.CargaHoraria.Update(aluno.CargaHoraria);
             
             _context.Certificados.Add(certificado);
             

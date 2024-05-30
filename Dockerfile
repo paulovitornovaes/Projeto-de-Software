@@ -20,4 +20,7 @@ RUN dotnet publish "Iduff.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:Use
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+# Copiando o banco de dados SQLite para o diretório de trabalho do contêiner
+COPY --chown=$APP_UID:$APP_UID /src/Iduff.db ./Iduff.db
+
 ENTRYPOINT ["dotnet", "Iduff.dll"]

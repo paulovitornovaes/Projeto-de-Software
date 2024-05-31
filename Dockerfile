@@ -21,6 +21,6 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
 # Copiando o banco de dados SQLite para o diretório de trabalho do contêiner
-COPY --chown=$APP_UID:$APP_UID /src/Iduff.db ./Iduff.db
+COPY --chown=$APP_UID:$APP_UID iduff.db ./iduff.db
 
 ENTRYPOINT ["dotnet", "Iduff.dll"]

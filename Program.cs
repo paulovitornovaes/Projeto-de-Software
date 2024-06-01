@@ -86,11 +86,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-// Adicionando redirecionamento de HTTPS condicionalmente
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
+app.UseHttpsRedirection();
+
 
 app.UseRouting();
 app.UseCors("AllowAllOrigins");

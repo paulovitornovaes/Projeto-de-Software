@@ -1,0 +1,20 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  iduff:
+    build:
+      context: "P:\\Users\\paulo\\Documents\\repositorios\\Iduff"
+      dockerfile: "Dockerfile"
+      target: "base"
+    command: []
+    entrypoint:
+    - "dotnet"
+    - "/app/bin/Debug/net8.0/Iduff.dll"
+    environment:
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+    image: "iduff:dev"
+    ports: []
+    volumes:
+    - "C:\\Users\\paulo\\.nuget\\packages:/home/app/.nuget/packages"
+    - "P:\\Users\\paulo\\Documents\\repositorios\\Iduff:/app:rw"
+    - "P:\\Users\\paulo\\Documents\\repositorios\\Iduff:/src:rw"
+    working_dir: "/app"

@@ -25,9 +25,9 @@ namespace Iduff.Controllers
         }
 
         [HttpGet("List")]
-        public async Task<ActionResult<IEnumerable<Certificado>>> GetCertificados()
+        public async Task<ActionResult<IEnumerable<Certificado>>> GetCertificados(string id)
         {
-            return await _context.Certificados.ToListAsync();
+            return await _context.Certificados.Where(c => c.AlunoId == id).ToListAsync();
         }
 
         [HttpGet("{id}")]

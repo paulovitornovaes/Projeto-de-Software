@@ -29,10 +29,18 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
 
-
-builder.Services.AddDbContext<IduffContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("IduffDbPostgres"))
-);
+if (builder.Environment.IsEnvironment("Homolog"))
+{
+    builder.Services.AddDbContext<IduffContext>(options =>
+        options.UseNpgsql(builder.Configuration.GetConnectionString("IduffDb"))
+    );
+}
+else
+{
+    builder.Services.AddDbContext<IduffContext>(options =>
+        options.UseSqlite(builder.Configuration.GetConnectionString("IduffDb"))
+    );
+}
 
 
 // Adicionando Identity

@@ -28,9 +28,12 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddControllers();
+
+
 builder.Services.AddDbContext<IduffContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("IduffDb"))
+    options.UseNpgsql(builder.Configuration.GetConnectionString("IduffDbPostgres"))
 );
+
 
 // Adicionando Identity
 builder.Services.AddIdentity<Usuario, IdentityRole>()
@@ -88,7 +91,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-
 app.UseRouting();
 app.UseCors("AllowAllOrigins");
 app.UseAuthentication();
@@ -98,5 +100,15 @@ app.MapControllers();
 
 // Endpoint de teste
 app.MapGet("/test", () => "Hello, World!");
+
+// Executar migrações automaticamente em Homolog
+if (app.Environment.IsEnvironment("Homolog"))
+{
+    using (var scope = app.Services.CreateScope())
+    {
+        var dbContext = scope.ServiceProvider.GetRequiredService<IduffContext>();
+        dbContext.Database.Migrate();
+    }
+}
 
 app.Run();

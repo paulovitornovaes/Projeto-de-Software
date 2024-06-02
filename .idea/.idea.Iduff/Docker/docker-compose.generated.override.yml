@@ -2,7 +2,7 @@
 services:
   iduff:
     build:
-      context: "P:\\Users\\paulo\\Documents\\repositorios\\Iduff"
+      context: "C:\\Users\\paulo\\OneDrive\\Documentos\\repositorios\\Projeto-de-Software"
       dockerfile: "Dockerfile"
       target: "base"
     command: []
@@ -15,6 +15,6 @@ services:
     ports: []
     volumes:
     - "C:\\Users\\paulo\\.nuget\\packages:/home/app/.nuget/packages"
-    - "P:\\Users\\paulo\\Documents\\repositorios\\Iduff:/app:rw"
-    - "P:\\Users\\paulo\\Documents\\repositorios\\Iduff:/src:rw"
+    - "C:\\Users\\paulo\\OneDrive\\Documentos\\repositorios\\Projeto-de-Software:/app:rw"
+    - "C:\\Users\\paulo\\OneDrive\\Documentos\\repositorios\\Projeto-de-Software:/src:rw"
     working_dir: "/app"

@@ -1,0 +1,32 @@
+﻿services:
+  - name: iduff
+    type: web
+    env: docker
+    plan: starter #
+    dockerfilePath: ./Dockerfile
+    buildCommand: "" 
+    startCommand: "" 
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Development
+      - key: ASPNETCORE_URLS
+        value: "https://+:8081;http://+:8080"
+      - key: ASPNETCORE_HTTPS_PORT
+        value: "8081"
+      - key: ASPNETCORE_Kestrel__Certificates__Default__Password
+        value: password123
+      - key: ASPNETCORE_Kestrel__Certificates__Default__Path
+        value: /aspnetapp.pfx
+    ports:
+      - port: 8080
+        protocol: tcp
+      - port: 8081
+        protocol: tcp
+    staticPublishPath: ./ 
+    volumes:
+      - name: aspnetapp-pfx
+        mountPath: /aspnetapp.pfx
+    secrets:
+      - name: aspnetapp-pfx
+        type: file
+        filePath: ./aspnetapp.pfx 

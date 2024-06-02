@@ -2,7 +2,7 @@
   iduff:
     image: iduff
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_ENVIRONMENT=Homolog
       - ASPNETCORE_URLS=https://+:8081;http://+:8080
       - ASPNETCORE_HTTPS_PORT=8081
       - ASPNETCORE_Kestrel__Certificates__Default__Password=password123

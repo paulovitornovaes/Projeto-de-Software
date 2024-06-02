@@ -31,12 +31,14 @@ builder.Services.AddControllers();
 
 if (builder.Environment.IsEnvironment("Homolog"))
 {
+    Console.WriteLine("usando banco de homologacao");
     builder.Services.AddDbContext<IduffContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("IduffDb"))
     );
 }
 else
 {
+    Console.WriteLine("usando banco local");
     builder.Services.AddDbContext<IduffContext>(options =>
         options.UseSqlite(builder.Configuration.GetConnectionString("IduffDb"))
     );

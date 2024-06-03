@@ -54,7 +54,10 @@ public class IduffContext(DbContextOptions options) : IdentityDbContext<Usuario>
             .HasOne(c => c.Evento)
             .WithMany(e => e.Certificados)
             .HasForeignKey(c => c.EventoId);
-
+        
+        modelBuilder.Entity<Evento>()
+            .Property(e => e.Data)
+            .HasColumnType("date");
     }
 
 }

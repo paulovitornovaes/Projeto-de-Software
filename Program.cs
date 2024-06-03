@@ -110,14 +110,6 @@ app.MapControllers();
 // Endpoint de teste
 app.MapGet("/test", () => "Hello, World!");
 
-// Executar migrações automaticamente em Homolog
-if (app.Environment.IsEnvironment("Homolog"))
-{
-    using (var scope = app.Services.CreateScope())
-    {
-        var dbContext = scope.ServiceProvider.GetRequiredService<IduffContext>();
-        dbContext.Database.Migrate();
-    }
-}
+
 
 app.Run();

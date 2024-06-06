@@ -13,7 +13,12 @@ public class AlunoRepository : BaseRepository<Aluno>, IAlunoRepository
     {
         _dbSet = context.Set<Aluno>();
     }
-    
+
+    public async Task<string> GetMatriculaByEmail(string email)
+    {
+        var aluno = await _dbSet.SingleOrDefaultAsync(m => m.Email == email);
+        return aluno?.matricula.ToString()!;
+    }
     public async Task<Aluno> GetAlunoByMatricula(string matricula)
     {
         return (await _dbSet.SingleOrDefaultAsync(m => m.matricula == long.Parse(matricula)))!;

@@ -1,4 +1,5 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.Diagnostics;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using Humanizer;
@@ -97,8 +98,8 @@ namespace Iduff.Repositories
             var token = GenerateToken(userSession);
             var tokenHandler = new JwtSecurityTokenHandler().WriteToken(token);
             var teste = GetExpiryTimestamp(tokenHandler);
-            //var matricula = 
-            return new ServiceResponses.LoginResponse(true, tokenHandler, "Login completed", "");
+            var matricula = await _alunoRepository.GetMatriculaByEmail(getUser.Email);
+            return new ServiceResponses.LoginResponse(true, tokenHandler, "Login completed", matricula);
         }
 
         private JwtSecurityToken GenerateToken(UserSession user)

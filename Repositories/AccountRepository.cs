@@ -10,58 +10,95 @@ using JWT.Algorithms;
 using JWT.Exceptions;
 using JWT.Serializers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Iduff.Repositories
 {
    public class AccountRepository(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config) : IAccountRepository
-    {
+   {
+        private IAlunoRepository _alunoRepository;
         private IJsonSerializer _serializer = new JsonNetSerializer();
         private IDateTimeProvider _provider = new UtcDateTimeProvider();
         private IBase64UrlEncoder _urlEncoder = new JwtBase64UrlEncoder();
         private IJwtAlgorithm _algorithm = new HMACSHA256Algorithm();
-    
+
+        public AccountRepository(UserManager<Usuario> userManager, RoleManager<IdentityRole> roleManager, IConfiguration config, IAlunoRepository alunoRepository) : this(userManager, roleManager, config)
+        {
+            _alunoRepository = alunoRepository;
+        }
+
         public async Task<ServiceResponses.GeneralResponse> CreateAccount(UserDto userDto)
         {
             if (userDto is null) return new ServiceResponses.GeneralResponse(false, "Model is empty");
-            var newUser = new Usuario()
+            if (!string.IsNullOrEmpty(userDto.Matricula))
             {
-                Name = userDto.Name,
-                Email = userDto.Email,
-                PasswordHash = userDto.Password,
-                UserName = userDto.Email
-            };
-            var user = await userManager.FindByEmailAsync(newUser.Email);
-            if (user is not null) return new ServiceResponses.GeneralResponse(false, "User registered already");
+                var existingUserByMatricula = await _alunoRepository.GetAlunoByMatricula(userDto.Matricula);
+                
+                if (existingUserByMatricula is not null) return new ServiceResponses.GeneralResponse(false, "Matrícula já existe");
+                
+                var newUser = new Aluno()
+                {
+                    Name = userDto.Name,
+                    Email = userDto.Email,
+                    PasswordHash = userDto.Password,
+                    UserName = userDto.Email,
+                    matricula = long.Parse(userDto.Matricula)
+                };
+                var createUser = await userManager.CreateAsync(newUser!, userDto.Password);
+                if (!createUser.Succeeded) return new ServiceResponses.GeneralResponse(false, createUser.Errors.FirstOrDefault()?.Description ?? "Um erro desconhecido aconteceu, contate o admin.");
+                string role = "User";
 
-            var createUser = await userManager.CreateAsync(newUser!, userDto.Password);
-            if (!createUser.Succeeded) return new ServiceResponses.GeneralResponse(false, createUser.Errors.FirstOrDefault()?.Description ?? "Um erro desconhecido aconteceu, contate o admin.");
+                await userManager.AddToRoleAsync(newUser, role);
+                return new ServiceResponses.GeneralResponse(true, "Account Created");
+            }
+            else
+            {
 
-            string role = userDto.Role == UserRole.Admin ? "Admin" : "User";
+                var newUser = new Usuario()
+                {
+                    Name = userDto.Name,
+                    Email = userDto.Email,
+                    PasswordHash = userDto.Password,
+                    UserName = userDto.Email,
+                };
+                
+                var user = await userManager.FindByEmailAsync(newUser.Email);
+                if (user is not null) return new ServiceResponses.GeneralResponse(false, "User registered already");
 
-            await userManager.AddToRoleAsync(newUser, role);
-            return new ServiceResponses.GeneralResponse(true, "Account Created");
+                var createUser = await userManager.CreateAsync(newUser!, userDto.Password);
+                if (!createUser.Succeeded) return new ServiceResponses.GeneralResponse(false, createUser.Errors.FirstOrDefault()?.Description ?? "Um erro desconhecido aconteceu, contate o admin.");
+                
+                string role = "Admin";
+
+                await userManager.AddToRoleAsync(newUser, role);
+                return new ServiceResponses.GeneralResponse(true, "Account Created");
+                
+            }
+                
+
         }
 
         public async Task<ServiceResponses.LoginResponse> LoginAccount(LoginDto loginDTO)
         {
             if (loginDTO == null)
-                return new ServiceResponses.LoginResponse(false, null!, "Login container is empty");
+                return new ServiceResponses.LoginResponse(false, null!, "Login container is empty", null);
 
             var getUser = await userManager.FindByEmailAsync(loginDTO.Email);
             if (getUser is null)
-                return new ServiceResponses.LoginResponse(false, null!, "User not found");
+                return new ServiceResponses.LoginResponse(false, null!, "User not found", null);
 
             bool checkUserPasswords = await userManager.CheckPasswordAsync(getUser, loginDTO.Password);
             if (!checkUserPasswords)
-                return new ServiceResponses.LoginResponse(false, null!, "Invalid email/password");
+                return new ServiceResponses.LoginResponse(false, null!, "Invalid email/password", null);
 
             var getUserRole = await userManager.GetRolesAsync(getUser);
             var userSession = new UserSession(getUser.Id, getUser.Name, getUser.Email, getUserRole.First());
             var token = GenerateToken(userSession);
             var tokenHandler = new JwtSecurityTokenHandler().WriteToken(token);
             var teste = GetExpiryTimestamp(tokenHandler);
-            return new ServiceResponses.LoginResponse(true, tokenHandler, "Login completed");
+            //var matricula = 
+            return new ServiceResponses.LoginResponse(true, tokenHandler, "Login completed", "");
         }
 
         private JwtSecurityToken GenerateToken(UserSession user)

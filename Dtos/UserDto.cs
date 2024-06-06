@@ -27,5 +27,6 @@ public class UserDto
     [Compare(nameof(Password))]
     public string ConfirmPassword { get; set; } = string.Empty;
     
-    public UserRole Role { get; set; }
+    //public UserRole Role { get; set; }
+    public string Matricula { get; set; }
 }

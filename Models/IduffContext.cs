@@ -22,10 +22,28 @@ public class IduffContext(DbContextOptions options) : IdentityDbContext<Usuario>
                 {
                     entry.Entity.CargaHoraria = new CargaHoraria();
                 }
+
+                // Adicionar o novo registro de CargaHoraria
+                if (entry.Entity.CargaHorariaId == 0)
+                {
+                    var cargaHoraria = new CargaHoraria
+                    {
+                        total = 0,
+                        estagio = 0,
+                        ministrarPalestras = 0,
+                        organizarPalestras = 0,
+                        presencaPalestras = 0,
+                        Aluno = entry.Entity
+                    };
+                    entry.Entity.CargaHoraria = cargaHoraria;
+                    entry.Entity.CargaHorariaId = cargaHoraria.Id;
+                    CargaHoraria.Add(cargaHoraria);
+                }
             }
         }
         return base.SaveChanges();
     }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);

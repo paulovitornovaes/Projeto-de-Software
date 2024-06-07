@@ -33,7 +33,7 @@ if (builder.Environment.IsEnvironment("Homolog"))
 {
     Console.WriteLine("usando banco de homologacao");
     builder.Services.AddDbContext<IduffContext>(options =>
-        options.UseNpgsql(builder.Configuration.GetConnectionString("IduffDb"))
+        options.UseNpgsql(builder.Configuration.GetConnectionString("IduffDb")).EnableSensitiveDataLogging()
     );
 }
 else

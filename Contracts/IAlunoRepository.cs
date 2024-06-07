@@ -7,4 +7,5 @@ public interface IAlunoRepository  : IBaseRepository<Aluno>
 {
     Task<Aluno> GetAlunoByMatricula(string matricula);
     Task<string> GetMatriculaByEmail(string email);
+    Task<CargaHoraria> CreateAlunoCargaHoraria(Aluno aluno);
 }

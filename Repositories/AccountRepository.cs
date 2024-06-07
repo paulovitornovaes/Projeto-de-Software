@@ -47,7 +47,8 @@ namespace Iduff.Repositories
                     matricula = long.Parse(userDto.Matricula),
                     UserType = "Aluno"
                 };
-               
+                var cargaHoraria = await _alunoRepository.CreateAlunoCargaHoraria(newUser);
+                newUser.CargaHorariaId = cargaHoraria.Id;
                 var createUser = await userManager.CreateAsync(newUser!, userDto.Password);
                 if (!createUser.Succeeded) return new ServiceResponses.GeneralResponse(false, createUser.Errors.FirstOrDefault()?.Description ?? "Um erro desconhecido aconteceu, contate o admin.");
                 string role = "User";

@@ -50,8 +50,10 @@ public class IduffContext(DbContextOptions options) : IdentityDbContext<Usuario>
 
         modelBuilder.Entity<Usuario>()
             .HasDiscriminator<string>("UserType")
-            //.HasValue<Administrador>("Administrador")
-            .HasValue<Aluno>("Aluno");
+            .HasValue<Aluno>("Aluno")
+            .HasValue<Admin>("Admin");
+
+    
         
         modelBuilder.Entity<Aluno>()
             .Property(u => u.matricula)

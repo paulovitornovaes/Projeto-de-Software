@@ -65,7 +65,7 @@ namespace Iduff.Repositories
                     Email = userDto.Email,
                     PasswordHash = userDto.Password,
                     UserName = userDto.Email,
-                    UserType = "Administrador"
+                    UserType = "Admin"
                 };
                 
                 var user = await userManager.FindByEmailAsync(newUser.Email);

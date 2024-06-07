@@ -44,8 +44,10 @@ namespace Iduff.Repositories
                     Email = userDto.Email,
                     PasswordHash = userDto.Password,
                     UserName = userDto.Email,
-                    matricula = long.Parse(userDto.Matricula)
+                    matricula = long.Parse(userDto.Matricula),
+                    UserType = "Aluno"
                 };
+               
                 var createUser = await userManager.CreateAsync(newUser!, userDto.Password);
                 if (!createUser.Succeeded) return new ServiceResponses.GeneralResponse(false, createUser.Errors.FirstOrDefault()?.Description ?? "Um erro desconhecido aconteceu, contate o admin.");
                 string role = "User";
@@ -62,6 +64,7 @@ namespace Iduff.Repositories
                     Email = userDto.Email,
                     PasswordHash = userDto.Password,
                     UserName = userDto.Email,
+                    UserType = "Administrador"
                 };
                 
                 var user = await userManager.FindByEmailAsync(newUser.Email);

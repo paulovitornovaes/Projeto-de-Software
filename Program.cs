@@ -107,8 +107,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-// Endpoint de teste
-app.MapGet("/test", () => "Hello, World!");
+
 
 
 

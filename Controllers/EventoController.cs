@@ -24,13 +24,18 @@ namespace Iduff.Controllers
         
         [HttpPost("SalvaPresencaEvento")]
         [Consumes("multipart/form-data")]
-        public async Task<OkObjectResult> SalvaPresencaEvento(IFormFile file, [FromForm] EventoDto eventoDto)
+        public async Task<IActionResult> SalvaPresencaEvento(IFormFile file, [FromForm] EventoDto eventoDto)
         {
-            var evento = await _eventoService.SalvaEvento(eventoDto);
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("O arquivo está vazio.");
+            }
 
+            var evento = await _eventoService.SalvaEvento(eventoDto);
             await _eventoService.SalvaPresencaEvento(file, evento);
-            
-            return Ok("Presencas contabilizadas.");
+    
+            return Ok("Presenças contabilizadas.");
         }
+
     }
 }

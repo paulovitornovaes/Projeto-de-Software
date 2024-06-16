@@ -24,17 +24,17 @@ namespace Iduff.Controllers
             _certificadoService = certificadoService;
         }
         [HttpGet("List")]
-        public async Task<ActionResult<IEnumerable<Certificado>>> GetCertificados(string? id)
+        public async Task<ActionResult<IEnumerable<Certificado>>> GetCertificados(string? AlunoId)
         {
             List<Certificado> certificados;
 
-            if (string.IsNullOrEmpty(id))
+            if (string.IsNullOrEmpty(AlunoId))
             {
                 certificados = await _context.Certificados.ToListAsync();
             }
             else
             {
-                certificados = await _context.Certificados.Where(c => c.AlunoId == id).ToListAsync();
+                certificados = await _context.Certificados.Where(c => c.AlunoId == AlunoId).ToListAsync();
             }
 
             return Ok(certificados);
